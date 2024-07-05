@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: gh;
+    src: url(../font/GochiHand-Regular.ttf),cursive;
+}
+.bg{
+    background-image: radial-gradient(#bfc0c1 7.2%, transparent 0);
+    
+    background-size: 25px 25px;
+    border-radius: 20px;
+}
+.row{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
