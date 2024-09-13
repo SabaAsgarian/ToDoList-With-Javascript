@@ -48,7 +48,7 @@
                       </div> 
                     <h3 class="text-[20px] w-full h-[20%] flex justify-center items-center text-center pt-[5%] pb-[3%]">~ Today I Need To ~</h3>
                   <div class="h-[20%] w-[95%] flex justify-center items-center">
-                    <input class="bg-transparent " type="text" name="" id="inp" maxlength="20" placeholder="max text length is 20 character">
+                    <input class="bg-transparent " type="text" name="" id="inp" maxlength="70" placeholder="max text length is 70 character">
                     <button  id="add" class="py-[8px] px-[8px] bg-white text-[12px] ml-[3%]">Submit</button>
                     <button id="update" onclick="myUpdate(this)"  class="py-[8px] px-[8px] bg-white text-[12px] ml-[3%]">Update</button>
                   </div>
@@ -77,7 +77,7 @@
         alert('Please write somthing as your todo-list!!!')
     }else{
         const li = document.createElement('li')
-        let truncatedText = temp.slice(0, 20) + (temp.length > 20 ? '...' : '')
+        let truncatedText = temp.slice(0, 70) + (temp.length > 70 ? '...' : '')
         li.innerHTML = `
             <div class=' w-full h-full  flex justify-center items-center ml-[10%]' id="kar">
                 <div class="w-[70%] h-full " id="wr">
@@ -102,11 +102,13 @@
         inp.value=null
         inp.focus()
         flag++
+        // Save to local storage
+        saveToLocalStorage();
     }
 })
     function mySelect(item){
         item.parentElement.previousElementSibling.style.textDecoration='line-through'
-        
+        saveToLocalStorage(); // Update local storage after selection
     }
     function _delete(item) {
     
@@ -114,6 +116,7 @@
         item.parentElement.parentElement.parentElement.style.transform='translateX(-500px)'
         setTimeout(() => {
             item.parentElement.parentElement.parentElement.remove()
+            saveToLocalStorage(); // Update local storage after deletion
         }, 1000);}
    
 
@@ -136,8 +139,50 @@ function myUpdate(item) {
   let temp = inp.value;
   myId.querySelector('#wr > b').innerText = temp;
   inp.value = '';
+  saveToLocalStorage(); // Update local storage after editing
 }
+
+// New function to save the current state to local storage
+function saveToLocalStorage() {
+    const todos = [];
+    const items = document.querySelectorAll('#list li');
+    items.forEach(item => {
+        const text = item.querySelector('.stufftodo').innerText;
+        const isChecked = item.querySelector('input[type="checkbox"]').checked;
+        todos.push({ text, isChecked });
+    });
+    localStorage.setItem('todos', JSON.stringify(todos));
+}
+
+// New function to load todos from local storage
+function loadFromLocalStorage() {
+    const todos = JSON.parse(localStorage.getItem('todos')) || [];
+    todos.forEach((todo, index) => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+            <div class=' w-full h-full  flex justify-center items-center ml-[10%]' id="kar">
+                <div class="w-[70%] h-full " id="wr">
+                    <b class="stufftodo text-[15px]" id="stufftodo">${todo.text}</b>
+                </div>
+                <div class="w-[30%] h-full flex flex-wrap">
+                    <input type="checkbox" ${todo.isChecked ? 'checked' : ''} onclick='mySelect(this)' id="done">
+                    <span onclick='_delete(this)' id="delete">
+                        <i class="icon-trash-empty"></i>
+                    </span>
+                    <em onclick="myEdit(this)" id="edit">
+                        <i class="icon-pencil-3"></i> 
+                    </em>
+                    <button id="mcopy" onclick='myCopy(this)'><i class=" icon-clipboard"></i>
+                </div>
+            </div>
+        `;
+        li.setAttribute('id', 'li' + (index + 1));
+        list.appendChild(li);
+    });
+}
+
+// Call loadFromLocalStorage on page load
+window.onload = loadFromLocalStorage;
 
 </script>
 </html>
-<!-- npx tailwindcss -i ./src/css/master.css -o ./src/css/output.css --watch -->
