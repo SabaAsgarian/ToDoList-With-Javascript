@@ -21,7 +21,7 @@ ToDoList-With-Javascript-with-Local-storage
 
 - Created - 2024-07-04
 
-- Technologies Used - Html , Css , Tailwind , JavaScript
+- Technologies Used - Html , Css ,  Tailwind , JavaScript
 
 - Hooks Used : useState 
 
